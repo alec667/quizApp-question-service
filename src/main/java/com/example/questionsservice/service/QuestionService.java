@@ -9,5 +9,6 @@ public interface QuestionService {
     Question getQuestion(Integer questionId);
     List<Question> getAllQuestion();
     String addQuestion(Question question);
-    Question updateQuestion(Question q);
+    Question updateQuestion(Question question);
+    String deleteQuestion(Integer questionId);
 }
