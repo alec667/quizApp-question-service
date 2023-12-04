@@ -1,12 +1,13 @@
 package com.example.questionsservice.service.impl;
 
+import com.example.questionsservice.exception.QuestionNotFoundException;
 import com.example.questionsservice.model.Question;
 import com.example.questionsservice.repository.QuestionRepository;
 import com.example.questionsservice.service.QuestionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -20,7 +21,14 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Question getQuestion(Integer questionId) {
-        return null;
+        Optional<Question> optional = repository.findById(questionId);
+        Question question;
+        if (optional.isPresent()) {
+            question = optional.get();
+            return question;
+        } else {
+            throw new QuestionNotFoundException("Question Not Found");
+        }
     }
 
     @Override
