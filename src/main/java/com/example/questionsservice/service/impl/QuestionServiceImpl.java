@@ -6,6 +6,7 @@ import com.example.questionsservice.repository.QuestionRepository;
 import com.example.questionsservice.service.QuestionService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,21 +34,38 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<Question> getAllQuestion() {
-        return null;
+        List<Question> questions = new ArrayList<>();
+        questions = repository.findAll();
+        return questions;
     }
 
     @Override
     public String addQuestion(Question question) {
-        return null;
+        repository.save(question);
+        return "Question created";
     }
 
     @Override
     public Question updateQuestion(Question question) {
-        return null;
+        Optional<Question> optional = repository.findById(question.getId());
+        Question updated = new Question();
+        if (optional.isPresent()){
+            updated = optional.get();
+            repository.save(updated);
+            return updated;
+        }else{
+            return repository.save(question);
+        }
     }
 
     @Override
     public String deleteQuestion(Integer questionId) {
-        return null;
+        Optional<Question> optionalQuestion = repository.findById(questionId);
+        if (optionalQuestion.isPresent()) {
+            repository.deleteById(questionId);
+            return "Question Id: " + questionId + " deleted";
+        } else {
+            return "Question Id: " + questionId + " doesn't exist";
+        }
     }
 }
