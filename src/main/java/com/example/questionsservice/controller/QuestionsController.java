@@ -17,7 +17,7 @@ public class QuestionsController {
     QuestionService questionService;
 
     @GetMapping(path = "{questionId}", produces = "application/json")
-    ResponseEntity<Question> createQuestion(@PathVariable("questionId") Integer questionId) {
+    ResponseEntity<Question> getQuestion(@PathVariable("questionId") Integer questionId) {
         return new ResponseEntity<>(questionService.getQuestion(questionId), HttpStatus.OK);
     }
 
