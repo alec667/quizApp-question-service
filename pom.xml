@@ -81,6 +81,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>question-service</finalName>
 	</build>
 	<repositories>
 		<repository>
