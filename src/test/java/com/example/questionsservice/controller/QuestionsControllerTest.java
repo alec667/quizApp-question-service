@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -73,18 +74,68 @@ class QuestionsControllerTest {
     }
 
     @Test
-    void getAllQuestionsTest() {
+    void getAllQuestionsTest() throws Exception {
+        when(questionService.getAllQuestion()).thenReturn(questionList);
+
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
+                .get("/questions/all")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", Matchers.notNullValue()))
+                .andExpect(jsonPath("$[1].rightAnswer", Matchers.is("Boolean")));
     }
 
     @Test
-    void createQuestionTest() {
+    void createQuestionTest() throws Exception {
+        Question nQuestion = new Question(9, "Question Title", "category", "option1", "option2", "option3", "rightOption", "rightOption");
+        String content = objectWriter.writeValueAsString(nQuestion);
+        when(questionService.addQuestion(nQuestion)).thenReturn("Question created");
+
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
+                .post("/questions")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content);
+
+        mockMvc.perform(mockRequest)
+                .andExpect(status().isCreated())
+                .andExpect(result ->
+                        assertThat(result.getResponse().getContentAsString())
+                                .isEqualTo("Question created"));
     }
 
     @Test
-    void updateQuestionTest() {
+    void updateQuestionTest() throws Exception {
+        Question updatedQuestion = new Question(1, "Updated title", "Java", "updated_answer", "0.0f", "updated_answer", "updated_answer", "0.0f");
+
+        String content = objectWriter.writeValueAsString(updatedQuestion);
+        when(questionService.updateQuestion(updatedQuestion)).thenReturn(updatedQuestion);
+
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
+                .put("/questions")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content);
+
+        mockMvc.perform(mockRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", Matchers.notNullValue()))
+                .andExpect(jsonPath("$.questionTitle", Matchers.is("Updated title")));
     }
 
     @Test
-    void deleteQuestionTest() {
+    void deleteQuestionTest() throws Exception {
+        when(questionService.deleteQuestion(1)).thenReturn("Question Id: 1 deleted");
+
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
+                .delete("/questions/1")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockRequest).andExpect(status().isOk())
+                .andExpect(result ->
+                        assertThat(result.getResponse().getContentAsString())
+                                .isEqualTo("Question Id: 1 deleted"));
     }
 }
