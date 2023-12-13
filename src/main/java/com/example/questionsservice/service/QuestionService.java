@@ -2,6 +2,7 @@ package com.example.questionsservice.service;
 
 import com.example.questionsservice.model.Question;
 import com.example.questionsservice.model.QuestionWrapper;
+import com.example.questionsservice.model.QuizAnswers;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ public interface QuestionService {
     String addQuestion(Question question);
     Question updateQuestion(Question question);
     String deleteQuestion(Integer questionId);
+    Integer getScore(List<QuizAnswers> answersList);
 
 
 }

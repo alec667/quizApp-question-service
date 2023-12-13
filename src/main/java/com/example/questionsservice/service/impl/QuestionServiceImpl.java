@@ -3,6 +3,7 @@ package com.example.questionsservice.service.impl;
 import com.example.questionsservice.exception.QuestionNotFoundException;
 import com.example.questionsservice.model.Question;
 import com.example.questionsservice.model.QuestionWrapper;
+import com.example.questionsservice.model.QuizAnswers;
 import com.example.questionsservice.repository.QuestionRepository;
 import com.example.questionsservice.service.QuestionService;
 import org.springframework.stereotype.Service;
@@ -99,5 +100,20 @@ public class QuestionServiceImpl implements QuestionService {
         }
     }
 
+    @Override
+    public Integer getScore(List<QuizAnswers> answersList) {
+        Integer score = 0;
+        for (QuizAnswers a : answersList) {
+            Optional<Question> question = repository.findById(a.getId());
+            if (question.isPresent()) {
+                if (a.getAnswer().equalsIgnoreCase(question.get().getRightAnswer())) {
+                    score++;
+                }
+            }
+
+        }
+
+        return score;
+    }
 
 }
