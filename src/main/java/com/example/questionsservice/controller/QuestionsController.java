@@ -40,4 +40,13 @@ public class QuestionsController {
     ResponseEntity<String> deleteQuestion(@PathVariable("questionId") Integer questionId) {
         return new ResponseEntity<>(questionService.deleteQuestion(questionId), HttpStatus.OK);
     }
+
+    //TODO generate quiz
+    @GetMapping(path = "generate")
+    ResponseEntity<List<Integer>> getQuestionsForQuiz(@RequestParam String category, @RequestParam int numOfQuestions){
+        return new ResponseEntity<>(questionService.getQuestionsForQuiz(category, numOfQuestions), HttpStatus.OK);
+
+    }
+    //TODO getQuestions (questionId)
+    //TODO calculate score
 }

@@ -2,6 +2,7 @@ package com.example.questionsservice.service.impl;
 
 import com.example.questionsservice.exception.QuestionNotFoundException;
 import com.example.questionsservice.model.Question;
+import com.example.questionsservice.model.QuestionWrapper;
 import com.example.questionsservice.repository.QuestionRepository;
 import com.example.questionsservice.service.QuestionService;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,35 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    public List<Integer> getQuestionsForQuiz(String category, int numOfQuestions) {
+        try {
+            return repository.findRandomQuestionsByCategory(category, numOfQuestions);
+        } catch (Exception e) {
+            throw new QuestionNotFoundException("No questions");
+        }
+    }
+
+    @Override
+    public List<QuestionWrapper> getQuestionsFromId(List<Integer> questionsId) {
+        List<QuestionWrapper> questionList = new ArrayList<>();
+        Optional<Question> optional;
+        for (Integer qId : questionsId) {
+            optional = repository.findById(qId);
+            if (optional.isPresent()) {
+                QuestionWrapper question = new QuestionWrapper(optional.get().getId(),
+                        optional.get().getQuestionTitle(),
+                        optional.get().getOption1(),
+                        optional.get().getOption2(),
+                        optional.get().getOption3(),
+                        optional.get().getOption4());
+                questionList.add(question);
+            }
+
+        }
+        return questionList;
+    }
+
+    @Override
     public List<Question> getAllQuestion() {
         List<Question> questions = new ArrayList<>();
         questions = repository.findAll();
@@ -49,11 +79,11 @@ public class QuestionServiceImpl implements QuestionService {
     public Question updateQuestion(Question question) {
         Optional<Question> optional = repository.findById(question.getId());
         Question updated = new Question();
-        if (optional.isPresent()){
+        if (optional.isPresent()) {
             updated = optional.get();
             repository.save(updated);
             return updated;
-        }else{
+        } else {
             return repository.save(question);
         }
     }
@@ -68,4 +98,6 @@ public class QuestionServiceImpl implements QuestionService {
             return "Question Id: " + questionId + " doesn't exist";
         }
     }
+
+
 }
