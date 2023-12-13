@@ -1,6 +1,7 @@
 package com.example.questionsservice.controller;
 
 import com.example.questionsservice.model.Question;
+import com.example.questionsservice.model.QuestionWrapper;
 import com.example.questionsservice.service.QuestionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -40,8 +41,9 @@ class QuestionsControllerTest {
     private AutoCloseable autoCloseable;
     ObjectMapper objectMapper = new ObjectMapper();
     ObjectWriter objectWriter = objectMapper.writer();
-    Question testQuestion1;
-    Question testQuestion2;
+    Question testQuestion1, testQuestion2;
+    QuestionWrapper questionWrapper1, questionWrapper2;
+    List<Integer> questionsIds;
     List<Question> questionList;
 
     @BeforeEach
@@ -52,6 +54,10 @@ class QuestionsControllerTest {
         testQuestion1 = new Question(1, "What is the default value of float variable?", "Java", "0.0d", "0.0f", "0", "not defined", "0.0f");
         testQuestion2 = new Question(2, "Which of the following is NOT a keyword in java?", "Java", "static", "Boolean", "void", "private", "Boolean");
         questionList = Arrays.asList(testQuestion1, testQuestion2);
+        questionsIds = Arrays.asList(testQuestion1.getId(), testQuestion2.getId());
+        questionWrapper1 = new QuestionWrapper(1, "What is the default value of float variable?", "0.0d", "0.0f", "0", "not defined");
+        questionWrapper2 = new QuestionWrapper(2, "Which of the following is NOT a keyword in java?", "static", "Boolean", "void", "private");
+
     }
 
     @AfterEach
@@ -137,5 +143,28 @@ class QuestionsControllerTest {
                 .andExpect(result ->
                         assertThat(result.getResponse().getContentAsString())
                                 .isEqualTo("Question Id: 1 deleted"));
+    }
+
+    @Test
+    void getQuestionsForQuiz() throws Exception {
+
+        when(questionService.getQuestionsForQuiz("Java", 2)).thenReturn(questionsIds);
+
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
+                .get("/questions/generate")
+                .param("category", "Java")
+                .param("numOfQuestions", "2");
+
+        mockMvc.perform(mockRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", Matchers.notNullValue()));
+    }
+
+    @Test
+    void getQuestionsFromId() {
+    }
+
+    @Test
+    void getScore() {
     }
 }

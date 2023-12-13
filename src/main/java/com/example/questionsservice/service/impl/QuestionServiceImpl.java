@@ -36,11 +36,9 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<Integer> getQuestionsForQuiz(String category, int numOfQuestions) {
-        try {
-            return repository.findRandomQuestionsByCategory(category, numOfQuestions);
-        } catch (Exception e) {
-            throw new QuestionNotFoundException("No questions");
-        }
+
+        return repository.findRandomQuestionsByCategory(category, numOfQuestions);
+
     }
 
     @Override

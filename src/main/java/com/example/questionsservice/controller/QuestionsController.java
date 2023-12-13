@@ -43,8 +43,8 @@ public class QuestionsController {
         return new ResponseEntity<>(questionService.deleteQuestion(questionId), HttpStatus.OK);
     }
 
-    //TODO generate quiz
-    @GetMapping(path = "generate")
+    // generate quiz
+    @GetMapping(path = "generate", produces = "application/json")
     public ResponseEntity<List<Integer>> getQuestionsForQuiz(@RequestParam String category, @RequestParam int numOfQuestions) {
         return new ResponseEntity<>(questionService.getQuestionsForQuiz(category, numOfQuestions), HttpStatus.OK);
 
