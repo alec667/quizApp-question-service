@@ -2,6 +2,7 @@ package com.example.questionsservice.controller;
 
 import com.example.questionsservice.model.Question;
 import com.example.questionsservice.model.QuestionWrapper;
+import com.example.questionsservice.model.QuizAnswers;
 import com.example.questionsservice.service.QuestionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -161,10 +162,39 @@ class QuestionsControllerTest {
     }
 
     @Test
-    void getQuestionsFromId() {
+    void getQuestionsFromId() throws Exception {
+        List<QuestionWrapper> questions = Arrays.asList(questionWrapper1, questionWrapper2);
+        String content = objectWriter.writeValueAsString(questionsIds);
+        when(questionService.getQuestionsFromId(questionsIds)).thenReturn(questions);
+
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
+                .post("/questions/getQuestions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content);
+
+        mockMvc.perform(mockRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", Matchers.notNullValue()))
+                .andExpect(jsonPath("$[0].questionTitle", Matchers.is("What is the default value of float variable?")));
     }
 
     @Test
-    void getScore() {
+    void getScore() throws Exception {
+        QuizAnswers answer1 = new QuizAnswers(1, "0.0f");
+        QuizAnswers answer2 = new QuizAnswers(2, "Boolean");
+        List<QuizAnswers> answersList = Arrays.asList(answer1, answer2);
+        String content = objectWriter.writeValueAsString(answersList);
+
+        when(questionService.getScore(answersList)).thenReturn(2);
+
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
+                .post("/questions/getScore")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content);
+
+        mockMvc.perform(mockRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", Matchers.notNullValue()));
+
     }
 }
