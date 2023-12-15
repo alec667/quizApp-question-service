@@ -50,13 +50,13 @@ public class QuestionsController {
 
     }
 
-    //TODO getQuestions (questionId)
+    //getQuestions (questionId)
     @PostMapping(path = "getQuestions")
     public ResponseEntity<List<QuestionWrapper>> getQuestionsFromId(@RequestBody List<Integer> questionsId) {
         return new ResponseEntity<>(questionService.getQuestionsFromId(questionsId), HttpStatus.OK);
     }
 
-    //TODO calculate score
+    //calculate score
     @PostMapping(path = "getScore")
     public ResponseEntity<Integer> getScore(@RequestBody List<QuizAnswers> answersList) {
         return new ResponseEntity<>(questionService.getScore(answersList), HttpStatus.OK);
