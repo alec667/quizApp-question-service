@@ -25,13 +25,12 @@ services:
       interval: 1m30s
       timeout: 10s
       retries: 3
-      start_period: 40s
     volumes:
       - db-data:/var/lib/mysql
   question-service:
     image: question-service
     ports:
-      - 8081:8081
+      - "8081:8081"
     networks:
       - ms-network
     restart: on-failure
@@ -48,6 +47,43 @@ services:
       eureka.instance.preferIpAddress: 'true'
     links:
       - mysql-container-question
+      - quiz-service-registry
+  mysql-container-quiz:
+    image: mysql:8.0.34
+    ports:
+      - "3307:3306"
+    networks:
+      - ms-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=quiz_db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3306"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - db-data2:/var/lib/mysql
+  quiz-service:
+    image: quiz-service
+    ports:
+      - "8082:8082"
+    networks:
+      - ms-network
+    restart: on-failure
+    depends_on:
+      mysql-container-quiz:
+        condition: service_healthy
+      quiz-service-registry:
+        condition: service_started
+    environment:
+      server.port: 8082
+      SPRING_APPLICATION_JSON: '{"eureka":{"client":{"serviceUrl":{"defaultZone":"http://quiz-service-registry:8761/eureka"}}}}'
+      eureka.client.enabled: 'true'
+      eureka.host: quiz-service-registry
+      eureka.instance.preferIpAddress: 'true'
+    links:
+      - mysql-container-quiz
       - quiz-service-registry
 volumes:
   db-data:
