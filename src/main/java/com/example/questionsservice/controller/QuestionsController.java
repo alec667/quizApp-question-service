@@ -4,6 +4,8 @@ import com.example.questionsservice.model.Question;
 import com.example.questionsservice.model.QuestionWrapper;
 import com.example.questionsservice.model.QuizAnswers;
 import com.example.questionsservice.service.QuestionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +21,13 @@ public class QuestionsController {
     QuestionService questionService;
 
     @GetMapping(path = "{questionId}", produces = "application/json")
+    @Operation(summary = "Returns a question by ID", description = "Provides Question details", responses = {@ApiResponse(responseCode = "200", description = "status OK")})
     public ResponseEntity<Question> getQuestion(@PathVariable("questionId") Integer questionId) {
         return new ResponseEntity<>(questionService.getQuestion(questionId), HttpStatus.OK);
     }
 
     @GetMapping(path = "/all", produces = "application/json")
+    @Operation(summary = "Returns a List of all questions", description = "Provides a list of questions as an ordered List", responses = {@ApiResponse(responseCode = "200", description = "status OK")})
     public ResponseEntity<List<Question>> getAllQuestions() {
         return new ResponseEntity<>(questionService.getAllQuestion(), HttpStatus.OK);
     }
