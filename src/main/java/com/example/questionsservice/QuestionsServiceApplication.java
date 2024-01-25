@@ -21,10 +21,10 @@ public class QuestionsServiceApplication {
 				.info(new Info().title("question service API")
 						.description("question service for quiz application")
 						.version("v1.0.0")
-						.license(new License().name("Apache 2.0").url("http://springdoc.org")))
+						.license(new License().name("Apache 2.0").url("")))
 				.externalDocs(new ExternalDocumentation()
-						.description("SpringShop Wiki Documentation")
-						.url("https://springshop.wiki.github.org/docs"));
+						.description("SpringDocs Wiki Documentation")
+						.url("https://springdoc.org/"));
 	}
 
 }
