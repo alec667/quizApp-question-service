@@ -52,19 +52,22 @@ public class QuestionsController {
 
     // generate quiz
     @GetMapping(path = "generate", produces = "application/json")
+    @Operation(summary = "Returns question's IDs for Quiz-Service", description = "Provides a list of questions IDs to be used by quiz-service API as GET method", responses = {@ApiResponse(responseCode = "200", description = "status OK")})
     public ResponseEntity<List<Integer>> getQuestionsForQuiz(@RequestParam String category, @RequestParam int numOfQuestions) {
         return new ResponseEntity<>(questionService.getQuestionsForQuiz(category, numOfQuestions), HttpStatus.OK);
 
     }
 
     //getQuestions (questionId)
-    @PostMapping(path = "getQuestions")
+    @PostMapping(path = "getQuestions", consumes = "application/json")
+    @Operation(summary = "Returns a list of question wrapper", description = "Provides (posts) a list of question wrapper objects to be used by quiz-service API", responses = {@ApiResponse(responseCode = "200", description = "status OK")})
     public ResponseEntity<List<QuestionWrapper>> getQuestionsFromId(@RequestBody List<Integer> questionsId) {
         return new ResponseEntity<>(questionService.getQuestionsFromId(questionsId), HttpStatus.OK);
     }
 
     //calculate score
     @PostMapping(path = "getScore")
+    @Operation(summary = "Calculates score", description = "Provides (posts) score for quiz-service API", responses = {@ApiResponse(responseCode = "200", description = "status OK")})
     public ResponseEntity<Integer> getScore(@RequestBody List<QuizAnswers> answersList) {
         return new ResponseEntity<>(questionService.getScore(answersList), HttpStatus.OK);
 
