@@ -33,16 +33,19 @@ public class QuestionsController {
     }
 
     @PostMapping(consumes = "application/json")
+    @Operation(summary = "Creates a question", description = "Creates a question object from request body", responses = {@ApiResponse(responseCode = "201", description = "status CREATED")})
     public ResponseEntity<String> createQuestion(@RequestBody Question question) {
         return new ResponseEntity<>(questionService.addQuestion(question), HttpStatus.CREATED);
     }
 
     @PutMapping(consumes = "application/json", produces = "application/json")
+    @Operation(summary = "Updates a question", description = "updates an existing question or, if it doesn't exist, creates it", responses = {@ApiResponse(responseCode = "200", description = "status OK")})
     public ResponseEntity<Question> updateQuestion(@RequestBody Question question) {
         return new ResponseEntity<>(questionService.updateQuestion(question), HttpStatus.OK);
     }
 
     @DeleteMapping("{questionId}")
+    @Operation(summary = "Deletes a question by ID", description = "Deletes a question from database", responses = {@ApiResponse(responseCode = "200", description = "status OK")})
     public ResponseEntity<String> deleteQuestion(@PathVariable("questionId") Integer questionId) {
         return new ResponseEntity<>(questionService.deleteQuestion(questionId), HttpStatus.OK);
     }
